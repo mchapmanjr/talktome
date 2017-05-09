@@ -11,6 +11,9 @@ import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.HtmlTable;
+import com.gargoylesoftware.htmlunit.html.HtmlTableCell;
+import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 import junit.framework.Assert;
@@ -85,6 +88,20 @@ public class AppTest
             Assert.assertEquals("Time-Based Portfolio Planner", timeProcessHorizonPage.getTitleText());
             final HtmlPage processRiskTolerancePage = webClient.getPage("https://www.americanfunds.com/advisor/tools/planning/portfolio-resources/time-based-portfolio-planner/process-risk-tolerance.htm?risk=3&Next=Next");
             Assert.assertEquals("Time-Based Portfolio Planner", timeProcessHorizonPage.getTitleText());
+            
+            final HtmlForm processRiskToleranceForm = processRiskTolerancePage.getFormByName("fundAllocForm");
+            System.out.print(processRiskToleranceForm.asXml());
+            
+            final HtmlPage processChooseFundsPage = webClient.getPage("https://www.americanfunds.com/advisor/tools/planning/portfolio-resources/time-based-portfolio-planner/process-choose-funds.htm?fundPct_1-2=15&fundPct_1-16=&fundPct_1-5=&fundPct_1-14=&fundPct_1-7=&fundPct_1-36=&fundPct_1-35=&fundPct_2-100=25&fundPct_2-3=&fundPct_2-33=&fundPct_2-10=&fundPct_2-34=&fundPct_2-4=&fundPct_2-1=&fundPct_3-12=20&fundPct_3-6=&fundPct_3-11=&fundPct_3-37=&fundPct_4-32=40&fundPct_4-114=&fundPct_4-60=&fundPct_4-42=&fundPct_4-112=&fundPct_4-21=&fundPct_4-8=&fundPct_4-31=&fundPct_4-23=&fundPct_4-48=&fundPct_4-22=&fundPct_4-39=&fundPct_4-41=&fundPct_4-40=&fundPct_4-43=&fundPct_4-19=&fundPct_4-20=&Next=Next&allocateByPercent=true");
+            System.out.print("\n\n\n****************\n");
+            final HtmlTable processChooseFundsTable = processChooseFundsPage.getHtmlElementById("fund-allocation-table");
+            for (final HtmlTableRow row : processChooseFundsTable.getRows()) {
+                System.out.println("Found row");
+                for (final HtmlTableCell cell : row.getCells()) {
+                    System.out.println("   Found cell: " + cell.asText());
+                }
+            }
+            // System.out.print(processChooseFundsPage.getElementById("fund-allocation-table").asXml());
             
         } catch (Exception ex) {
         	ex.printStackTrace();
