@@ -1,4 +1,4 @@
-package com.cg;
+package com.capgroup.googhome.virtualwholesaler;
 
 import java.util.List;
 

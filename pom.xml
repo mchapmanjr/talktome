@@ -101,7 +101,13 @@
 			<artifactId>mail</artifactId>
 			<version>1.4.3</version>
 		</dependency>
-
+		
+	    <dependency>
+	      <groupId>net.sourceforge.htmlunit</groupId>
+	      <artifactId>htmlunit</artifactId>
+	      <version>2.26</version>
+	  	</dependency>
+		
 	</dependencies>
 
 
