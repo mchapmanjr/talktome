@@ -80,7 +80,12 @@ public class AppTest
             // System.out.println(nextPage.asXml());
             
             final HtmlPage timeHorizonPage = webClient.getPage("https://www.americanfunds.com/advisor/tools/planning/portfolio-resources/time-based-portfolio-planner/time-horizon.htm?start=true");
-           
+            Assert.assertEquals("Time-Based Portfolio Planner", timeHorizonPage.getTitleText());
+            final HtmlPage timeProcessHorizonPage = webClient.getPage("https://www.americanfunds.com/advisor/tools/planning/portfolio-resources/time-based-portfolio-planner/process-time-horizon.htm?accu=3&dist=3&group=3&Next=Next");
+            Assert.assertEquals("Time-Based Portfolio Planner", timeProcessHorizonPage.getTitleText());
+            final HtmlPage processRiskTolerancePage = webClient.getPage("https://www.americanfunds.com/advisor/tools/planning/portfolio-resources/time-based-portfolio-planner/process-risk-tolerance.htm?risk=3&Next=Next");
+            Assert.assertEquals("Time-Based Portfolio Planner", timeProcessHorizonPage.getTitleText());
+            
         } catch (Exception ex) {
         	ex.printStackTrace();
         }
