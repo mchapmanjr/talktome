@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<project name="GoogHome" basedir="." default="deploy">
+
+	<property file="app_server.properties"/>
+	
+	<property name="target.dir" value="target/googhome"/>
+	<property name="web.apps.dir" value="${web.apps.dir.property}"/>
+	<property name="war.dir" value="${war.dir.property}"/>
+
+	<target name="deploy">
+		<exec executable="cmd" failonerror="true">
+			<arg value="/c mvn package -Dmaven.test.skip=true" />
+		</exec>
+		<antcall target="deploy-war"/>
+	</target>
+
+	
+	<target name="clean" description="clean mvn target directory and tomcat">	
+		<exec executable="cmd" failonerror="true">
+			<arg value="/c mvn clean" />
+		</exec>
+	</target>
+	
+	<target name="clean-deploy">
+		<antcall target="clean"/>
+		<antcall target="deploy"/>
+	</target>
+	
+	<target name="delete-war">
+		<delete dir="${web.apps.dir}/${war.dir}" failonerror="true"/>
+	</target>
+	
+	<target name="delete-war-deploy">
+		<delete dir="${web.apps.dir}/${war.dir}" failonerror="true"/>
+		<antcall target="deploy"/>	
+	</target>
+	
+	<target name="run-tests">
+		<exec executable="cmd" failonerror="true">
+			<arg value="/c mvn test" />
+		</exec>
+	</target>
+				
+	<target name="deploy-war">
+		<copy todir="${web.apps.dir}/${war.dir}" overwrite="true">
+			<fileset dir="${target.dir}" />
+		</copy>
+	</target>
+	
+</project>
