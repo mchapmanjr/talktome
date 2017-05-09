@@ -60,16 +60,16 @@ public class AppTest
         	final HtmlPage loginPage = webClient.getPage("https://www.americanfunds.com/advisor/login.htm");
 //            System.out.print(loginPage.asText());
 //            Assert.assertEquals("HtmlUnit - Welcome to HtmlUnit", page.getTitleText());
-            System.out.print(loginPage.getTitleText());
+            // System.out.print(loginPage.getTitleText());
             
             final HtmlForm loginForm = loginPage.getFormByName("loginForm2");
-            System.out.print(loginForm.asXml());
+//            System.out.print(loginForm.asXml());
             
             // final HtmlSubmitInput loginButton = loginForm.getInputByName("doLogin");
             final HtmlButton loginButton = loginForm.getButtonByName("doLogin");
             
             final HtmlHiddenInput useridFieldName = loginForm.getInputByName("useridFieldName");
-            System.out.println("useridFieldName = " + useridFieldName);
+            // System.out.println("useridFieldName = " + useridFieldName);
             final HtmlTextInput userIdTextField = loginForm.getInputByName(useridFieldName.getValueAttribute());
             final HtmlPasswordInput passwordTextField = loginForm.getInputByName("password");
 
@@ -79,7 +79,7 @@ public class AppTest
 
             // Now submit the form by clicking the button and get back the second page.
             final HtmlPage nextPage = loginButton.click();
-            System.out.println("login ? " + nextPage.asText().indexOf("Web3 E. User11, Generic Dealer"));
+            // System.out.println("login ? " + nextPage.asText().indexOf("Web3 E. User11, Generic Dealer"));
             // System.out.println(nextPage.asXml());
             
             final HtmlPage timeHorizonPage = webClient.getPage("https://www.americanfunds.com/advisor/tools/planning/portfolio-resources/time-based-portfolio-planner/time-horizon.htm?start=true");
@@ -89,8 +89,16 @@ public class AppTest
             final HtmlPage processRiskTolerancePage = webClient.getPage("https://www.americanfunds.com/advisor/tools/planning/portfolio-resources/time-based-portfolio-planner/process-risk-tolerance.htm?risk=3&Next=Next");
             Assert.assertEquals("Time-Based Portfolio Planner", timeProcessHorizonPage.getTitleText());
             
-            final HtmlForm processRiskToleranceForm = processRiskTolerancePage.getFormByName("fundAllocForm");
-            System.out.print(processRiskToleranceForm.asXml());
+//            final HtmlForm processRiskToleranceForm = processRiskTolerancePage.getFormByName("fundAllocForm");
+//            System.out.print(processRiskToleranceForm.asXml());
+            
+            final HtmlTable processRiskTolerancePageTable = processRiskTolerancePage.getHtmlElementById("fund-allocation-table");
+            for (final HtmlTableRow row : processRiskTolerancePageTable.getRows()) {
+                System.out.println("Found row");
+                for (final HtmlTableCell cell : row.getCells()) {
+                    System.out.println("   Found cell: " + cell.asText());
+                }
+            }
             
             final HtmlPage processChooseFundsPage = webClient.getPage("https://www.americanfunds.com/advisor/tools/planning/portfolio-resources/time-based-portfolio-planner/process-choose-funds.htm?fundPct_1-2=15&fundPct_1-16=&fundPct_1-5=&fundPct_1-14=&fundPct_1-7=&fundPct_1-36=&fundPct_1-35=&fundPct_2-100=25&fundPct_2-3=&fundPct_2-33=&fundPct_2-10=&fundPct_2-34=&fundPct_2-4=&fundPct_2-1=&fundPct_3-12=20&fundPct_3-6=&fundPct_3-11=&fundPct_3-37=&fundPct_4-32=40&fundPct_4-114=&fundPct_4-60=&fundPct_4-42=&fundPct_4-112=&fundPct_4-21=&fundPct_4-8=&fundPct_4-31=&fundPct_4-23=&fundPct_4-48=&fundPct_4-22=&fundPct_4-39=&fundPct_4-41=&fundPct_4-40=&fundPct_4-43=&fundPct_4-19=&fundPct_4-20=&Next=Next&allocateByPercent=true");
             System.out.print("\n\n\n****************\n");
