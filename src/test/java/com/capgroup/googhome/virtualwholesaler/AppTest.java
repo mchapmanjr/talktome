@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomAttr;
+import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
@@ -261,14 +262,14 @@ public class AppTest
     @org.junit.Test
     public void testDistributions() throws Exception {
     	final WebClient webClient = new WebClient();
-        final HtmlPage processChooseFundsPage = webClient.getPage("file:///users/ayh/desktop/pr-tool.html");
-        final HtmlTable processChooseFundsTable = processChooseFundsPage.getHtmlElementById("fund-allocation-table");
+        final HtmlPage processChooseFundsPage = webClient.getPage("file:///users/mkec/desktop/pr-tool2.html");
+        final List<HtmlTableBody> tbodylist = processChooseFundsPage.getByXPath("//table[@id='fund-allocation-table']/tbody");
         
-		  for (final HtmlTableRow row : processChooseFundsTable.getRows()) {
-			  System.out.println("Found row");
-			  for (final HtmlTableCell cell : row.getCells()) {
-			      System.out.println("   Found cell: " + cell.asXml());
-			  }
+		  for (final HtmlTableBody tbody : tbodylist) {
+          	System.out.println(String.format("fund body: [%s]", tbody.asXml()));
+            DomText fundName = tbody.getFirstByXPath("tr[2]/th/a/text()");
+            DomText fundPercent = tbody.getFirstByXPath("tr[2]/td/text()");
+            System.out.println(String.format("fund [%s], pct [%s]", fundName, fundPercent));
 		  }
 
     }
