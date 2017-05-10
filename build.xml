@@ -48,4 +48,12 @@
 		</copy>
 	</target>
 	
+	<target name="deploy-jsp">
+		<copy todir="${web.apps.dir}/${war.dir}" overwrite="true">
+			<fileset dir="src/main/webapp">
+				<exclude name="**/*.xml"/>
+			</fileset>
+		</copy>
+	</target>
+	
 </project>
