@@ -1,5 +1,6 @@
 package com.capgroup.googhome.virtualwholesaler;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -10,6 +11,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomAttr;
 import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
+import com.gargoylesoftware.htmlunit.html.HtmlDivision;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlHiddenInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -29,6 +31,33 @@ public class App
     {
         System.out.println( "Hello World!" );
     }
+    
+    private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yy");
+    
+    public List <News> getNews() throws Exception {
+    	
+    	java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.SEVERE); 
+    	
+    	// final WebClient webClient = new WebClient(BrowserVersion.FIREFOX_52, "irvcache", 8080);
+    	final WebClient webClient = new WebClient();
+        final HtmlPage homePage = webClient.getPage("https://www.americanfunds.com/advisor/");
+        
+        List <News> newsList = new ArrayList();
+        final List<HtmlDivision> teaserListing = homePage.getByXPath("//div[@class='ns-news-teaser standard  ']//div[@class='teaser-listing']");
+        for (final HtmlDivision teaser : teaserListing) {
+        	DomText teaserHeader = teaser.getFirstByXPath("p/a/text()");
+        	DomText teaserDate = teaser.getFirstByXPath("p[2]/span/text()");
+        	
+        	System.out.println(teaserHeader);
+        	System.out.println(teaserDate);
+        	News news = new News();
+        	news.teaserHeader = teaserHeader.asText();
+        	news.teaserDate = dateFormatter.parse(teaserDate.asText());
+        }
+        
+        return newsList;
+    }
+
     
     private int getAccumulation (int age, int retirementAge) {
     	int accumulationPeriod = retirementAge - age;

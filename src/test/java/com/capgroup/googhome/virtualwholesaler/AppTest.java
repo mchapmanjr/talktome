@@ -1,6 +1,9 @@
 package com.capgroup.googhome.virtualwholesaler;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Level;
@@ -11,6 +14,7 @@ import com.gargoylesoftware.htmlunit.html.DomAttr;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
+import com.gargoylesoftware.htmlunit.html.HtmlDivision;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlHiddenInput;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
@@ -289,6 +293,32 @@ public class AppTest
 		  for (FundAllocation fundAllocation : fundAllocations) {
 			  System.out.println(fundAllocation);
 		  }
+    }
+    
+    private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yy");
+    
+    @org.junit.Test
+    public void testNews() throws Exception {
+    	
+    	java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.SEVERE); 
+    	
+    	final WebClient webClient = new WebClient(BrowserVersion.FIREFOX_52, "irvcache", 8080);
+        final HtmlPage homePage = webClient.getPage("https://www.americanfunds.com/advisor/");
+        
+        List <News> newsList = new ArrayList();
+        final List<HtmlDivision> teaserListing = homePage.getByXPath("//div[@class='ns-news-teaser standard  ']//div[@class='teaser-listing']");
+        for (final HtmlDivision teaser : teaserListing) {
+        	DomText teaserHeader = teaser.getFirstByXPath("p/a/text()");
+        	DomText teaserDate = teaser.getFirstByXPath("p[2]/span/text()");
+        	
+        	System.out.println(teaserHeader);
+        	System.out.println(teaserDate);
+        	News news = new News();
+        	news.teaserHeader = teaserHeader.asText();
+        	news.teaserDate = dateFormatter.parse(teaserDate.asText());
+        }
+        
+//        System.out.println(homePage.asXml());
     }
     
     public void testHomePage() throws Exception {
