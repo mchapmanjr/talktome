@@ -1,4 +1,4 @@
-<html>
+
 <head>
 <script src="https://code.jquery.com/jquery-1.11.1.min.js"
 	type="text/javascript">
@@ -19,7 +19,7 @@
 				console.log('postingp');
 				$.ajax({
 					type : "POST",
-					url : "http://ec2-52-15-70-60.us-east-2.compute.amazonaws.com:8080/googhome/action/portfolio/recommend",
+					url : "action/portfolio/recommend",
 					data : JSON.stringify({
 						user : {user_id: "jamesdean", profile : {given_name : "john", display_name : "john doe"}, access_token: "1231233"},
 						device : {

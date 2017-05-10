@@ -1,27 +1,30 @@
 package com.capgroup.googhome.controller;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.capgroup.googhome.JSONResponse;
-import com.capgroup.googhome.domain.PortfolioRecommendation;
-import com.frogermcs.gactions.ResponseBuilder;
-import com.frogermcs.gactions.api.request.Inputs;
-import com.frogermcs.gactions.api.request.RootRequest;
-import com.frogermcs.gactions.api.response.RootResponse;
 
-@Controller
-@RequestMapping(value = "/portfolio")
+@RestController
 public class PortfolioController {
 
+	@PostMapping("portfolio/recommend")
+	public void handle(@RequestBody String body, Writer writer) throws IOException {
+		System.out.print(body);
+		writer.write(body);
+	}
 	
-	
+	/**
 	@RequestMapping(value = "/recommend", method = RequestMethod.POST)
 	public @ResponseBody RootResponse getPortfolioRecommendation(@RequestBody RootRequest rootRequest) {
 		
@@ -36,5 +39,6 @@ public class PortfolioController {
 		return response;
 		
 	}
+	**/
 	
 }
