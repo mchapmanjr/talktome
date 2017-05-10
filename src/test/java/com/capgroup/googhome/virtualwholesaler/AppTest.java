@@ -3,18 +3,23 @@ package com.capgroup.googhome.virtualwholesaler;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.logging.Level;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.DomAttr;
+import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlHiddenInput;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
+import com.gargoylesoftware.htmlunit.html.HtmlLink;
 import com.gargoylesoftware.htmlunit.html.HtmlNumberInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTable;
+import com.gargoylesoftware.htmlunit.html.HtmlTableBody;
 import com.gargoylesoftware.htmlunit.html.HtmlTableCell;
 import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
@@ -114,6 +119,10 @@ public class AppTest
         
         System.out.println(processChooseFundURL);
         Assert.assertEquals(processChooseFundURL, "https://www.americanfunds.com/advisor/tools/planning/portfolio-resources/time-based-portfolio-planner/process-choose-funds.htm?fundPct_1-2=15&fundPct_1-16=&fundPct_1-5=&fundPct_1-14=&fundPct_1-7=&fundPct_1-36=&fundPct_1-35=&fundPct_2-100=25&fundPct_2-3=&fundPct_2-33=&fundPct_2-10=&fundPct_2-34=&fundPct_2-4=&fundPct_2-1=&fundPct_3-12=20&fundPct_3-6=&fundPct_3-11=&fundPct_3-37=&fundPct_4-32=40&fundPct_4-114=&fundPct_4-60=&fundPct_4-42=&fundPct_4-112=&fundPct_4-21=&fundPct_4-8=&fundPct_4-31=&fundPct_4-23=&fundPct_4-48=&fundPct_4-22=&fundPct_4-39=&fundPct_4-41=&fundPct_4-40=&fundPct_4-43=&fundPct_4-19=&fundPct_4-20=&Next=Next&allocateByPercent=true");
+    }
+    
+    public void testAccumulation () {
+    	Assert.assertEquals(4, getAccumulation(49, 65));
     }
     
     private int getAccumulation (int age, int retirementAge) {
@@ -235,7 +244,7 @@ public class AppTest
     	distributionTable.put(109,1.2);
     	distributionTable.put(110,1.1);
     	
-    	int distributionPeriod = (Integer) distributionTable.get(retirementAge);
+    	double distributionPeriod = (Double) distributionTable.get(retirementAge);
     	
     	if (distributionPeriod > 20) {
 			retValue = 5;
@@ -249,13 +258,39 @@ public class AppTest
 	return retValue;
     }
     
+    @org.junit.Test
+    public void testDistributions() throws Exception {
+    	final WebClient webClient = new WebClient();
+        final HtmlPage processChooseFundsPage = webClient.getPage("file:///users/ayh/desktop/pr-tool.html");
+        final HtmlTable processChooseFundsTable = processChooseFundsPage.getHtmlElementById("fund-allocation-table");
+        
+		  for (final HtmlTableRow row : processChooseFundsTable.getRows()) {
+			  System.out.println("Found row");
+			  for (final HtmlTableCell cell : row.getCells()) {
+			      System.out.println("   Found cell: " + cell.asXml());
+			  }
+		  }
+
+    }
+    
     public void testHomePage() throws Exception {
     	System.getProperties().put("org.apache.commons.logging.simplelog.defaultlog", "error");
+    	java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF); 
     	try {
     		
     		int age = 50;
     		int retirementAge = 60;
     		String riskTolerance = "H";
+    		
+    		
+    		if ("H".equals(riskTolerance)) {
+    			riskTolerance = "5";
+    		} else if ("M".equals(riskTolerance)) {
+    			riskTolerance = "3";
+    		} else {
+    			riskTolerance = "1";
+    		}
+    			
     		
         	final WebClient webClient = new WebClient(BrowserVersion.FIREFOX_52, "irvcache", 8080);
             // final HtmlPage page = webClient.getPage("http://htmlunit.sourceforge.net");
@@ -285,10 +320,23 @@ public class AppTest
             // System.out.println(nextPage.asXml());
             
             final HtmlPage timeHorizonPage = webClient.getPage("https://www.americanfunds.com/advisor/tools/planning/portfolio-resources/time-based-portfolio-planner/time-horizon.htm?start=true");
+            
+            final DomAttr href = timeHorizonPage.getFirstByXPath("//table[@id='time-grid']/tbody/tr[" + getDistribution(retirementAge)+ "]/td[" + getAccumulation(age, retirementAge) + "]/a/@href");
+//            for (final HtmlTableRow row : timeHorizonPageTable.getRows()) {
+//                System.out.println("Found row");
+//                for (final HtmlTableCell cell : row.getCells()) {
+//                    System.out.println("   Found cell: " + cell.asXml());
+//                }
+//            }
+            System.out.println(href.getValue());
+ 
+            
             Assert.assertEquals("Time-Based Portfolio Planner", timeHorizonPage.getTitleText());
-            final HtmlPage timeProcessHorizonPage = webClient.getPage("https://www.americanfunds.com/advisor/tools/planning/portfolio-resources/time-based-portfolio-planner/process-time-horizon.htm?accu=3&dist=3&group=3&Next=Next");
+            // final HtmlPage timeProcessHorizonPage = webClient.getPage("https://www.americanfunds.com/advisor/tools/planning/portfolio-resources/time-based-portfolio-planner/process-time-horizon.htm?accu=3&dist=3&group=3&Next=Next");
+            final HtmlPage timeProcessHorizonPage = webClient.getPage("https://www.americanfunds.com/advisor/tools/planning/portfolio-resources/time-based-portfolio-planner/" + href.getValue() + "&group=3&Next=Next");
+            
             Assert.assertEquals("Time-Based Portfolio Planner", timeProcessHorizonPage.getTitleText());
-            final HtmlPage processRiskTolerancePage = webClient.getPage("https://www.americanfunds.com/advisor/tools/planning/portfolio-resources/time-based-portfolio-planner/process-risk-tolerance.htm?risk=3&Next=Next");
+            final HtmlPage processRiskTolerancePage = webClient.getPage("https://www.americanfunds.com/advisor/tools/planning/portfolio-resources/time-based-portfolio-planner/process-risk-tolerance.htm?risk=" + riskTolerance + "&Next=Next");
             Assert.assertEquals("Time-Based Portfolio Planner", timeProcessHorizonPage.getTitleText());
             
 //            final HtmlForm processRiskToleranceForm = processRiskTolerancePage.getFormByName("fundAllocForm");
@@ -426,12 +474,20 @@ public class AppTest
             final HtmlPage processChooseFundsPage = webClient.getPage(processChooseFundURL);
             System.out.print("\n\n\n****************\n");
             final HtmlTable processChooseFundsTable = processChooseFundsPage.getHtmlElementById("fund-allocation-table");
-            for (final HtmlTableRow row : processChooseFundsTable.getRows()) {
-                System.out.println("Found row");
-                for (final HtmlTableCell cell : row.getCells()) {
+            
+            final List<HtmlTableBody> tbodylist = processChooseFundsPage.getByXPath("//table[@id='fund-allocation-table']/tbody");
+            for (final HtmlTableBody tbody : tbodylist) {
+            	
+            	System.out.println(String.format("fund body: [%s]", tbody.asXml()));
+                DomText fundName = tbody.getFirstByXPath("/child::*/th[@scope='row']/a/text()");
+                DomText fundPercent = tbody.getFirstByXPath("/child::*/th[@class='percent']/text()");
+                System.out.println(String.format("fund [%s], pct [%s]", fundName, fundPercent));
+                /*for (final HtmlTableCell cell : row.getCells()) {
+                	if (cell)
                     System.out.println("   Found cell: " + cell.asText());
-                }
+                }*/
             }
+            System.exit(0);
             // System.out.print(processChooseFundsPage.getElementById("fund-allocation-table").asXml());
             
         } catch (Exception ex) {
