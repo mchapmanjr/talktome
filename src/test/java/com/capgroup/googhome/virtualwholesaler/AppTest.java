@@ -266,6 +266,7 @@ public class AppTest
         final List<HtmlTableBody> tbodylist = processChooseFundsPage.getByXPath("//table[@id='fund-allocation-table']/tbody");
         
 		  for (final HtmlTableBody tbody : tbodylist) {
+			  
           	System.out.println(String.format("fund body: [%s]", tbody.asXml()));
             DomText fundName = tbody.getFirstByXPath("tr[2]/th/a/text()");
             DomText fundPercent = tbody.getFirstByXPath("tr[2]/td/text()");
