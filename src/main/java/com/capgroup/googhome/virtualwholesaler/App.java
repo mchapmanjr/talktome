@@ -180,7 +180,7 @@ public class App
 	return retValue;
     }
     
-    public List <FundAllocation> getFundAllocations(int age, int retirementAge, String riskTolerance) throws Exception {
+    public List <FundAllocation> getFundAllocations(WebClient webClient, int age, int retirementAge, String riskTolerance) throws Exception {
     	System.getProperties().put("org.apache.commons.logging.simplelog.defaultlog", "error");
     	java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.SEVERE); 
     	List <FundAllocation> retFundAllocations = new ArrayList <FundAllocation>();
@@ -201,7 +201,7 @@ public class App
     		}
     			
     		
-        	final WebClient webClient = new WebClient(BrowserVersion.FIREFOX_52, "irvcache", 8080);
+        	//webClient = new WebClient(BrowserVersion.FIREFOX_52, "irvcache", 8080);
             // final HtmlPage page = webClient.getPage("http://htmlunit.sourceforge.net");
         	final HtmlPage loginPage = webClient.getPage("https://www.americanfunds.com/advisor/login.htm");
 //            System.out.print(loginPage.asText());

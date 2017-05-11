@@ -65,7 +65,7 @@ public class AppTest
     public void testApp() throws Exception
     {
     	App app = new App();
-    	List<FundAllocation> allocations = app.getFundAllocations(50, 60, "medium");
+    	List<FundAllocation> allocations = app.getFundAllocations(new WebClient(),50, 60, "medium");
     	assertTrue( allocations.size() > 0 );
     	System.out.println(allocations);
     }
