@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.capgroup.googhome.CacheManager;
 import com.capgroup.googhome.domain.HookResponse;
 import com.capgroup.googhome.domain.portfolioconstruction.Context;
 import com.capgroup.googhome.domain.portfolioconstruction.PortfolioConstructionRequest;
@@ -29,10 +30,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 @RestController
 public class PortfolioController {
 
-	private Map<String, List<FundAllocation>> portfolioCache = new HashMap<String, List<FundAllocation>>();
-	
 
-	private Map<String, List<News>> newsCache = new HashMap<String, List<News>>();
 	
 
 	@PostMapping("/debug")
@@ -76,13 +74,18 @@ public class PortfolioController {
 		
 	    String newsKey="NEWS";
 
-	    news=this.newsCache.get(newsKey);
+	    news=CacheManager.newsCache.get(newsKey);
 		
 	    if (news==null) {
-	    	news=app.getNews((new WebClient(BrowserVersion.FIREFOX_52, "irvcache", 8080)));
-	    	//news=app.getNews((new WebClient()));
+	    	
+	    	//WebClient webClient = new WebClient();
+	    	WebClient webClient=new WebClient(BrowserVersion.FIREFOX_52, "irvcache", 8080);
+	    	
+	    	news=app.getNews(webClient);
 
-	    	this.newsCache.put(newsKey, news);
+	    	webClient.close();
+
+	    	CacheManager.newsCache.put(newsKey, news);
 		
 	    }
 		
@@ -158,15 +161,19 @@ public class PortfolioController {
 	    
 	    String recommendationsKey="RECOMMENDATIONS_"+ riskTolerance.substring(0, 1).toUpperCase() +"_"+age+"_"+yearsToRetirement;
 
-	    funds=this.portfolioCache.get(recommendationsKey);
+	    funds=CacheManager.portfolioCache.get(recommendationsKey);
 	    
 	    App app = new App();
 	    
 	    if (funds==null) {
-		    funds=app.getFundAllocations(new WebClient(BrowserVersion.FIREFOX_52, "irvcache", 8080), age, age+yearsToRetirement, riskTolerance.substring(0, 1).toUpperCase());
-		    //funds=app.getFundAllocations(new WebClient(), age, age+yearsToRetirement, riskTolerance.substring(0, 1).toUpperCase());
-
-	    	portfolioCache.put(recommendationsKey, funds);
+	    	//WebClient webClient= new WebClient();
+	    	WebClient webClient=new WebClient(BrowserVersion.FIREFOX_52, "irvcache", 8080);
+	    	
+		    funds= app.getFundAllocations(webClient, age, age+yearsToRetirement, riskTolerance.substring(0, 1).toUpperCase());
+		    webClient.close();
+		    
+	    	CacheManager.portfolioCache.put(recommendationsKey, funds);
+	    	System.out.println("FOUNDS SIZE: " + funds.size());
 	    }
 	    
 		
@@ -177,12 +184,12 @@ public class PortfolioController {
 	@GetMapping("/cacheclear")
 	public void cleanCache(Writer writer) throws IOException {
 		
-		synchronized (this.portfolioCache) {
-			this.portfolioCache.clear();
+		synchronized (CacheManager.portfolioCache) {
+			CacheManager.portfolioCache.clear();
 		}
 		
-		synchronized (this.newsCache) {
-			this.newsCache.clear();
+		synchronized (CacheManager.newsCache) {
+			CacheManager.newsCache.clear();
 		}
 		
 		writer.write("Cache Cleared");
