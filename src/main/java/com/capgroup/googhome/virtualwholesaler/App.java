@@ -34,12 +34,12 @@ public class App
     
     private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yy");
     
-    public List <News> getNews() throws Exception {
+    public List <News> getNews(WebClient webClient) throws Exception {
     	
     	java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.SEVERE); 
     	
     	// final WebClient webClient = new WebClient(BrowserVersion.FIREFOX_52, "irvcache", 8080);
-    	final WebClient webClient = new WebClient();
+//    	final WebClient webClient = new WebClient();
         final HtmlPage homePage = webClient.getPage("https://www.americanfunds.com/advisor/");
         
         List <News> newsList = new ArrayList();
