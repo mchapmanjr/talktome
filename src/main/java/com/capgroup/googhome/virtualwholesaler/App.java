@@ -33,17 +33,16 @@ public class App
 //    	final WebClient webClient = new WebClient();
         final HtmlPage homePage = webClient.getPage("https://www.americanfunds.com/advisor/");
         
-        List <News> newsList = new ArrayList();
+        List <News> newsList = new ArrayList <News>();
         final List<HtmlDivision> teaserListing = homePage.getByXPath("//div[@class='ns-news-teaser standard  ']//div[@class='teaser-listing']");
         for (final HtmlDivision teaser : teaserListing) {
         	DomText teaserHeader = teaser.getFirstByXPath("p/a/text()");
         	DomText teaserDate = teaser.getFirstByXPath("p[2]/span/text()");
         	
-        	System.out.println(teaserHeader);
-        	System.out.println(teaserDate);
         	News news = new News();
         	news.teaserHeader = teaserHeader.asText();
         	news.teaserDate = dateFormatter.parse(teaserDate.asText());
+        	newsList.add(news);
         }
         
         return newsList;
