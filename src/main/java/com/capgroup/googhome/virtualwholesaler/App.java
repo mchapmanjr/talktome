@@ -24,6 +24,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 public class App 
 {   
     private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE MMM dd hh:mm:ss yyyy");
+    private static final SimpleDateFormat dateFormatterShort = new SimpleDateFormat("MM/dd/yy");
     private static final SimpleDateFormat dateFormatterLong = new SimpleDateFormat("EEEE MMMM d yyyy");
     
     public List <News> getNews(WebClient webClient) throws Exception {
@@ -45,9 +46,15 @@ public class App
         	
         	News news = new News();
         	news.teaserHeader = teaserHeader.asText();
-        	String tempDateStr = teaserDate.getNodeValue().replaceAll("PDT", "");
-        	tempDateStr = tempDateStr.replaceAll("PST", "");
-        	news.teaserDate = dateFormatter.parse(tempDateStr);
+        	String tempDateStr = teaserDate.getNodeValue();
+        	if (tempDateStr.contains("/")) {
+        		news.teaserDate = dateFormatterShort.parse(tempDateStr);
+        	} else {
+        		tempDateStr = tempDateStr.replaceAll("PDT", "");
+            	tempDateStr = tempDateStr.replaceAll("PST", "");
+            	news.teaserDate = dateFormatter.parse(tempDateStr);
+        	}      
+        	
         	news.teaserDateString = dateFormatterLong.format(news.teaserDate);
         	newsList.add(news);
         }
