@@ -23,7 +23,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 public class App 
 {   
-    private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yy");
+    private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE MMM dd hh:mm:ss yyyy");
     private static final SimpleDateFormat dateFormatterLong = new SimpleDateFormat("EEEE MMMM d yyyy");
     
     public List <News> getNews(WebClient webClient) throws Exception {
@@ -35,14 +35,19 @@ public class App
         final HtmlPage homePage = webClient.getPage("https://www.americanfunds.com/advisor/");
         
         List <News> newsList = new ArrayList <News>();
-        final List<HtmlDivision> teaserListing = homePage.getByXPath("//div[@class='ns-news-teaser standard  ']//div[@class='teaser-listing']");
+        final List<HtmlDivision> teaserListing = homePage.getByXPath("//div[@class='ns-news-teaser standard  ']/h3[text()='News']/../div[@class='teaser-listing']");
         for (final HtmlDivision teaser : teaserListing) {
         	DomText teaserHeader = teaser.getFirstByXPath("p/a/text()");
         	DomText teaserDate = teaser.getFirstByXPath("p[2]/span/text()");
         	
+        	System.out.println(teaserHeader.asText());
+        	System.out.println(teaserDate.getNodeValue());
+        	
         	News news = new News();
         	news.teaserHeader = teaserHeader.asText();
-        	news.teaserDate = dateFormatter.parse(teaserDate.asText());
+        	String tempDateStr = teaserDate.getNodeValue().replaceAll("PDT", "");
+        	tempDateStr = tempDateStr.replaceAll("PST", "");
+        	news.teaserDate = dateFormatter.parse(tempDateStr);
         	news.teaserDateString = dateFormatterLong.format(news.teaserDate);
         	newsList.add(news);
         }
@@ -51,7 +56,7 @@ public class App
     }
 
     
-    private int getAccumulation (int age, int retirementAge) {
+    public static int getAccumulation (int age, int retirementAge) {
     	int accumulationPeriod = retirementAge - age;
     	int retValue = 0;
     		if (accumulationPeriod > 20) {
@@ -66,7 +71,7 @@ public class App
     	return retValue;
     }
    
-    private int getDistribution (int retirementAge) {
+    public static int getDistribution (int retirementAge) {
     	Hashtable distributionTable = new Hashtable();
     	int retValue = 0;
     	
@@ -230,7 +235,7 @@ public class App
             
             final HtmlPage timeHorizonPage = webClient.getPage("https://www.americanfunds.com/advisor/tools/planning/portfolio-resources/time-based-portfolio-planner/time-horizon.htm?start=true");
             
-            final DomAttr href = timeHorizonPage.getFirstByXPath("//table[@id='time-grid']/tbody/tr[" + getDistribution(retirementAge)+ "]/td[" + getAccumulation(age, retirementAge) + "]/a/@href");
+            final DomAttr href = timeHorizonPage.getFirstByXPath("//table[@id='time-grid']/tbody/tr[" + App.getDistribution(retirementAge)+ "]/td[" + App.getAccumulation(age, retirementAge) + "]/a/@href");
 //            for (final HtmlTableRow row : timeHorizonPageTable.getRows()) {
 //                System.out.println("Found row");
 //                for (final HtmlTableCell cell : row.getCells()) {

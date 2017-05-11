@@ -156,7 +156,7 @@ public class PortfolioController {
 		
 	    List<FundAllocation> funds= null;
 	    
-	    String recommendationsKey="RECOMMENDATIONS_"+ riskTolerance.substring(0, 1).toUpperCase() +"_"+age+"_"+yearsToRetirement;
+	    String recommendationsKey="RECOMMENDATIONS_"+ riskTolerance.substring(0, 1).toUpperCase() +"_"+App.getDistribution(age)+"_"+App.getAccumulation(age, yearsToRetirement);
 
 	    funds=this.portfolioCache.get(recommendationsKey);
 	    
