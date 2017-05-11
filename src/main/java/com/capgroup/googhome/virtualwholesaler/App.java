@@ -21,17 +21,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlTableBody;
 import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
-/**
- * Hello world!
- *
- */
 public class App 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
-    }
-    
+{   
     private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yy");
     
     public List <News> getNews(WebClient webClient) throws Exception {
