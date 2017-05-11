@@ -24,6 +24,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 public class App 
 {   
     private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yy");
+    private static final SimpleDateFormat dateFormatterLong = new SimpleDateFormat("EEEE MMMM d yyyy");
     
     public List <News> getNews(WebClient webClient) throws Exception {
     	
@@ -42,6 +43,7 @@ public class App
         	News news = new News();
         	news.teaserHeader = teaserHeader.asText();
         	news.teaserDate = dateFormatter.parse(teaserDate.asText());
+        	news.teaserDateString = dateFormatterLong.format(news.teaserDate);
         	newsList.add(news);
         }
         

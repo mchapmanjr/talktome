@@ -299,26 +299,10 @@ public class AppTest
     
     @org.junit.Test
     public void testNews() throws Exception {
-    	
-    	java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.SEVERE); 
-    	
-    	final WebClient webClient = new WebClient(BrowserVersion.FIREFOX_52, "irvcache", 8080);
-        final HtmlPage homePage = webClient.getPage("https://www.americanfunds.com/advisor/");
-        
-        List <News> newsList = new ArrayList();
-        final List<HtmlDivision> teaserListing = homePage.getByXPath("//div[@class='ns-news-teaser standard  ']//div[@class='teaser-listing']");
-        for (final HtmlDivision teaser : teaserListing) {
-        	DomText teaserHeader = teaser.getFirstByXPath("p/a/text()");
-        	DomText teaserDate = teaser.getFirstByXPath("p[2]/span/text()");
-        	
-        	System.out.println(teaserHeader);
-        	System.out.println(teaserDate);
-        	News news = new News();
-        	news.teaserHeader = teaserHeader.asText();
-        	news.teaserDate = dateFormatter.parse(teaserDate.asText());
-        }
-        
-//        System.out.println(homePage.asXml());
+    	App app = new App();
+    	List <News> newsList = app.getNews(new WebClient(BrowserVersion.FIREFOX_52, "irvcache", 8080));
+    	Assert.assertTrue(newsList.size() > 0);
+    	System.out.println(newsList);
     }
     
     public void testHomePage() throws Exception {
